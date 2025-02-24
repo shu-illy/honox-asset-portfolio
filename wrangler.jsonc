@@ -2,13 +2,14 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "honox-asset-portfolio",
   "main": "./dist/index.js",
+  "pages_build_output_dir": "./dist",
   "compatibility_date": "2025-02-24",
   "compatibility_flags": [
     "nodejs_compat"
   ],
   "assets": {
     "directory": "./dist"
-  }
+  },
   // "vars": {
   //   "MY_VAR": "my-variable"
   // },
@@ -24,13 +25,13 @@
   //     "bucket_name": "my-bucket"
   //   }
   // ],
-  // "d1_databases": [
-  //   {
-  //     "binding": "MY_DB",
-  //     "database_name": "my-database",
-  //     "database_id": ""
-  //   }
-  // ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "${DATABASE_NAME}",
+      "database_id": "${DATABASE_ID}"
+    }
+  ]
   // "ai": {
   //   "binding": "AI"
   // }
