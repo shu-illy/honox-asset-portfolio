@@ -28,6 +28,7 @@
   "d1_databases": [
     {
       "binding": "DB",
+      // configure this in wrangler.json
       "database_name": "${DATABASE_NAME}",
       "database_id": "${DATABASE_ID}"
     }
