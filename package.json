@@ -5,7 +5,12 @@
     "dev": "vite",
     "build": "vite build --mode client && vite build && cp ./.assetsignore ./dist",
     "preview": "wrangler dev",
-    "deploy": "bun run build && wrangler deploy"
+    "deploy": "bun run build && wrangler deploy",
+    "g:migration:file": "wrangler d1 migrations create honox-asset-portfolio",
+    "g:migration:sql": "prisma migrate diff --to-schema-datamodel ./prisma/schema.prisma --script --output",
+    "migrate:local": "wrangler d1 migrations apply honox-asset-portfolio --local",
+    "migrate:remote": "wrangler d1 migrations apply honox-asset-portfolio --remote"
+    
   },
   "private": true,
   "dependencies": {

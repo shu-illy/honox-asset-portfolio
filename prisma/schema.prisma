@@ -10,3 +10,37 @@ datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
+
+enum Sector {
+  CONSTRUCTION       // 建設業
+  MANUFACTURING      // 製造業
+  INFORMATION_TECH   // 情報通信業
+  TRANSPORT          // 運輸・郵便業
+  WHOLESALE          // 卸売業
+  RETAIL            // 小売業
+  FINANCE           // 金融・保険業
+  REAL_ESTATE       // 不動産業
+  SERVICES          // サービス業
+  ELECTRIC_GAS      // 電気・ガス業
+}
+
+enum MarketSection {
+  PRIME      // プライム市場
+  STANDARD   // スタンダード市場
+  GROWTH     // グロース市場
+}
+
+model Brand {
+  id            String        @id @default(cuid())
+  name          String
+  stockCode     String        @unique
+  sector        Sector        // 業種
+  marketSection MarketSection // 市場区分
+  description   String?       // 会社概要
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([stockCode])
+  @@index([sector])
+  @@map("brands")
+}
