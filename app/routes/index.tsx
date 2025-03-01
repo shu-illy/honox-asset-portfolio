@@ -1,6 +1,6 @@
-import { createRoute } from "honox/factory";
-import { fetchPrismaClient } from "../lib/prisma";
-import type { Brand } from "@prisma/client";
+import type { Brand } from '@prisma/client';
+import { createRoute } from 'honox/factory';
+import { fetchPrismaClient } from '../lib/prisma';
 
 export default createRoute(async (c) => {
   const prisma = await fetchPrismaClient(c.env.DB);

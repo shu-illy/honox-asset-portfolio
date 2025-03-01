@@ -1,10 +1,10 @@
-import type {} from 'hono'
+import type {} from 'hono';
 
 declare module 'hono' {
   interface Env {
-    Variables: {}
+    Variables: {};
     Bindings: {
-      DB: D1Database
-    }
+      DB: D1Database;
+    };
   }
 }
