@@ -12,7 +12,10 @@
     "migrate:remote": "wrangler d1 migrations apply honox-asset-portfolio --remote",
     "seed": "bun prisma/seed.ts",
     "seed:local": "bun run seed",
-    "seed:remote": "bun run seed -- --remote"
+    "seed:remote": "bun run seed -- --remote",
+    "lint": "biome lint .",
+    "format": "biome format . --write",
+    "check": "biome check --apply ."
   },
   "private": true,
   "dependencies": {
@@ -22,6 +25,7 @@
     "honox": "^0.1.35"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
     "@cloudflare/workers-types": "^4.20250214.0",
     "@hono/vite-build": "^1.3.0",
     "@hono/vite-dev-server": "^0.18.2",
