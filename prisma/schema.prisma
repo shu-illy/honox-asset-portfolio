@@ -31,7 +31,7 @@ enum MarketSection {
 }
 
 model Brand {
-  id            String        @id @default(cuid())
+  id            String         @id @default(cuid())
   name          String
   stockCode     String        @unique
   sector        Sector        // 業種
@@ -39,8 +39,42 @@ model Brand {
   description   String?       // 会社概要
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
+  // 関連テーブルへの参照
+  holdings      StockHolding[] // 将来的な複数ユーザーの保有データ
+  prices        StockPrice[]   // 株価の履歴データ
 
   @@index([stockCode])
   @@index([sector])
   @@map("brands")
+}
+
+// 所有株数テーブル（将来的な複数ユーザー対応を想定）
+model StockHolding {
+  id            String    @id @default(cuid())
+  brandId       String    // Brand との多対1関係
+  brand         Brand     @relation(fields: [brandId], references: [id])
+  shares        Int       // 保有株数
+  costBasis     Float     // 取得単価（1株あたり）
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([brandId])
+  @@map("stock_holdings")
+}
+
+// 株価テーブル
+model StockPrice {
+  id                String    @id @default(cuid())
+  brandId           String    // Brand との多対1関係
+  brand             Brand     @relation(fields: [brandId], references: [id])
+  date              DateTime  // 株価の基準日
+  currentPrice      Float     // 現在値
+  dividendYield     Float     // 予想配当利回り(%)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([brandId])
+  @@index([date])
+  @@unique([brandId, date]) // 同一銘柄の同一日付のデータ重複を防ぐ
+  @@map("stock_prices")
 }
