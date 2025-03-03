@@ -21,8 +21,10 @@
   "dependencies": {
     "@prisma/adapter-d1": "^6.4.1",
     "@prisma/client": "^6.4.1",
+    "chart.js": "^4.4.8",
     "hono": "^4.7.2",
-    "honox": "^0.1.35"
+    "honox": "^0.1.35",
+    "react-chartjs-2": "^5.3.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
