@@ -42,6 +42,7 @@ model Brand {
   // 関連テーブルへの参照
   holdings      StockHolding[] // 将来的な複数ユーザーの保有データ
   prices        StockPrice[]   // 株価の履歴データ
+  dividendMonths DividendMonth[] // 配当月情報
 
   @@index([stockCode])
   @@index([sector])
@@ -69,7 +70,7 @@ model StockPrice {
   brand             Brand     @relation(fields: [brandId], references: [id])
   date              DateTime  // 株価の基準日
   currentPrice      Float     // 現在値
-  dividendYield     Float     // 予想配当利回り(%)
+  dividendYield     Float     // 予想配当利回り(%) 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
@@ -77,4 +78,18 @@ model StockPrice {
   @@index([date])
   @@unique([brandId, date]) // 同一銘柄の同一日付のデータ重複を防ぐ
   @@map("stock_prices")
+}
+
+// 配当月テーブル
+model DividendMonth {
+  id        String   @id @default(cuid())
+  brandId   String   // Brand との多対1関係
+  brand     Brand    @relation(fields: [brandId], references: [id])
+  month     Int      // 配当支払月（1-12）
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([brandId, month]) // 同一銘柄の同一月のデータ重複を防ぐ
+  @@index([brandId])
+  @@map("dividend_months")
 }
