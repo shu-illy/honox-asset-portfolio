@@ -1,7 +1,9 @@
+"use client";
+
 import type { Brand, StockHolding, StockPrice } from "@prisma/client";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { useEffect, useState } from "react";
 import { Pie } from "react-chartjs-2";
-import type { TooltipItem } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -14,6 +16,12 @@ type SectorChartProps = {
 };
 
 export function SectorChart({ holdings }: SectorChartProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // 業種ごとの評価額を集計
   const sectorTotals = holdings.reduce((acc, holding) => {
     const latestPrice = holding.brand.prices[0]?.currentPrice || 0;
@@ -51,24 +59,29 @@ export function SectorChart({ holdings }: SectorChartProps) {
       legend: {
         position: "right" as const,
       },
-      tooltip: {
-        callbacks: {
-          label: (context: TooltipItem<"pie">) => {
-            const value = context.raw as number;
-            const total = Object.values(sectorTotals).reduce(
-              (a: number, b: number) => a + b,
-              0
-            );
-            const percentage = ((value / total) * 100).toFixed(1);
-            return `¥${value.toLocaleString()} (${percentage}%)`;
-          },
-        },
-      },
+      // tooltip: {
+      //   callbacks: {
+      //     label: (context: any) => {
+      //       const value = context.raw as number;
+      //       const total = Object.values(sectorTotals).reduce(
+      //         (a: number, b: number) => a + b,
+      //         0
+      //       );
+      //       const percentage = ((value / total) * 100).toFixed(1);
+      //       return `¥${value.toLocaleString()} (${percentage}%)`;
+      //     },
+      //   },
+      // },
     },
   };
 
+  if (!mounted) {
+    return <div className="w-full h-[400px] bg-gray-100 animate-pulse" />;
+  }
+
   return (
     <div className="w-full h-[400px] flex items-center justify-center">
+      <div className="hoge">hoge</div>
       <Pie data={data} options={options} />
     </div>
   );

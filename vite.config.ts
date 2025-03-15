@@ -4,18 +4,30 @@ import tailwindcss from '@tailwindcss/vite';
 import honox from 'honox/vite';
 import { defineConfig } from 'vite';
 
-export default defineConfig(() => {
-  return {
-    plugins: [
-      tailwindcss(),
-      honox({
-        devServer: { adapter },
-        client: { input: ['./app/style.css'] },
-      }),
-      build(),
-    ],
-    ssr: {
-      external: ['@prisma/client'],
-    },
-  };
-});
+
+export default defineConfig(({ mode }) => {
+  if (mode === 'client') {
+    return {
+      build: {
+        rollupOptions: {
+          input: ['./app/client.ts'],
+          output: {
+            entryFileNames: 'static/client.js',
+            chunkFileNames: 'static/assets/[name]-[hash].js',
+            assetFileNames: 'static/assets/[name].[ext]',
+          },
+        },
+        emptyOutDir: false,
+      },
+      plugins: [tailwindcss(), honox({ devServer: { adapter }, client: { input: ['./app/style.css'] },}), build()],
+    }
+  // biome-ignore lint/style/noUselessElse: <explanation>
+  } else {
+    return {
+      ssr: {
+        external: ['react', 'react-dom', '@prisma/client'],
+      },
+      plugins: [tailwindcss(), honox({ devServer: { adapter }, client: { input: ['./app/style.css'] },}), build()],
+    }
+  }
+})

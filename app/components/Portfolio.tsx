@@ -1,11 +1,11 @@
 import type {
   Brand,
+  DividendMonth,
   StockHolding,
   StockPrice,
-  DividendMonth,
 } from "@prisma/client";
-import { SectorChart } from "./SectorChart";
 import { DividendSummary } from "./DividendSummary";
+import { SectorChart } from "../islands/SectorChart";
 
 type PortfolioProps = {
   holdings: (StockHolding & {
@@ -77,7 +77,7 @@ export function Portfolio({ holdings }: PortfolioProps) {
         {/* 業種別割合の円グラフ */}
         <div className="bg-white p-4 rounded-lg shadow">
           <h2 className="text-xl font-bold mb-4">業種別構成比</h2>
-          {/* <SectorChart holdings={holdings} /> */}
+          <SectorChart holdings={holdings} />
         </div>
 
         {/* 配当情報 */}
