@@ -1,11 +1,15 @@
-"use client";
-
 import type { Brand, StockHolding, StockPrice } from "@prisma/client";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { useEffect, useState } from "react";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  type ChartOptions,
+  type TooltipItem,
+} from "chart.js";
+import type { FC } from "react";
 import { Pie } from "react-chartjs-2";
-
-ChartJS.register(ArcElement, Tooltip, Legend);
+import { sectorName } from "../models/brand";
 
 type SectorChartProps = {
   holdings: (StockHolding & {
@@ -15,18 +19,14 @@ type SectorChartProps = {
   })[];
 };
 
-export function SectorChart({ holdings }: SectorChartProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+export const SectorChart: FC<SectorChartProps> = ({ holdings }) => {
+  ChartJS.register(ArcElement, Tooltip, Legend);
 
   // 業種ごとの評価額を集計
   const sectorTotals = holdings.reduce((acc, holding) => {
     const latestPrice = holding.brand.prices[0]?.currentPrice || 0;
     const marketValue = latestPrice * holding.shares;
-    const sector = holding.brand.sector;
+    const sector = sectorName(holding.brand);
 
     acc[sector] = (acc[sector] || 0) + marketValue;
     return acc;
@@ -54,35 +54,30 @@ export function SectorChart({ holdings }: SectorChartProps) {
     ],
   };
 
-  const options = {
+  const options: ChartOptions<"pie"> = {
     plugins: {
       legend: {
         position: "right" as const,
       },
-      // tooltip: {
-      //   callbacks: {
-      //     label: (context: any) => {
-      //       const value = context.raw as number;
-      //       const total = Object.values(sectorTotals).reduce(
-      //         (a: number, b: number) => a + b,
-      //         0
-      //       );
-      //       const percentage = ((value / total) * 100).toFixed(1);
-      //       return `¥${value.toLocaleString()} (${percentage}%)`;
-      //     },
-      //   },
-      // },
+      tooltip: {
+        callbacks: {
+          label: (context: TooltipItem<"pie">) => {
+            const value = context.raw as number;
+            const total = Object.values(sectorTotals).reduce(
+              (sum: number, item: number) => sum + item,
+              0
+            );
+            const percentage = ((value / total) * 100).toFixed(1);
+            return `¥${value.toLocaleString()} (${percentage}%)`;
+          },
+        },
+      },
     },
   };
 
-  if (!mounted) {
-    return <div className="w-full h-[400px] bg-gray-100 animate-pulse" />;
-  }
-
   return (
     <div className="w-full h-[400px] flex items-center justify-center">
-      <div className="hoge">hoge</div>
       <Pie data={data} options={options} />
     </div>
   );
-}
+};
